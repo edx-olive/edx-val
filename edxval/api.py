@@ -291,6 +291,14 @@ def get_video_transcript_data(video_id, language_code):
     if video_transcript:
         try:
             return dict(file_name=video_transcript.filename, content=video_transcript.transcript.file.read())
+        except (FileNotFoundError, IOError) as file_error:
+            logger.error(
+                '[edx-val] Error while opening file %s for video=%s - language_code=%s \nFull traceback: \n%s',
+                video_transcript.filename,
+                video_id,
+                language_code,
+                file_error
+            )
         except Exception:
             logger.exception(
                 '[edx-val] Error while retrieving transcript for video=%s -- language_code=%s',
